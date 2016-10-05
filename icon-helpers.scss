@@ -1,0 +1,146 @@
+// =================================================================
+// ICONS Mixins
+//
+// Helpers which make background-image svg icons easy in most common use cases.
+// Works with postcss-svgicon.
+//
+// See icons.readme.md for details.
+// =================================================================
+
+
+$icon-transition-speed: 300ms !default;
+$icon-default-color: #000 !default;
+$icon-default-size: 1em !default;
+$icon-default-position: center center !default;
+
+
+// base properties for all icons
+%icon-shared {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	display: inline-block;
+	background-repeat: no-repeat;
+	background-position: $icon-default-position;
+	background-size: $icon-default-size;
+	opacity: 1;
+	transform: rotate(0);
+	transform-origin: $icon-default-position;
+
+	transition: background-color $icon-transition-speed,
+		transform $icon-transition-speed,
+		opacity $icon-transition-speed;
+}
+
+// An icon helper with no defaults set.
+// Use this to place modify an icon placed with @include icon()
+@mixin icon-state(
+	$icon: false,
+	$color: false,
+	$color-hover: false,
+	$color-active: false,
+	$size: false,
+	$position: false,
+	$_extend: false,
+	$selector: '&'
+) {
+	#{$selector}:before {
+		@if $_extend {
+			@extend %icon-shared;
+		}
+
+		@if ($icon and $color) {
+			background-image: svgicon($icon, $color);
+		} @elseif $color {
+			@warn 'An icon must be specified when setting an icon color.';
+		} @elseif $icon {
+			@warn 'A color must be specified when choosing an icon.';
+		}
+
+		@if $size {
+			background-size: $size;
+		}
+
+		@if $position {
+			background-position: $position;
+		}
+
+		@content;
+	}
+
+	@if ($icon and $color-hover) {
+		@if ($selector == '&') {
+			&:hover:before,
+			&:focus:before {
+				background-image: svgicon($icon, $color-hover);
+			}
+		} @else {
+			&:hover #{$selector}:before,
+			&:focus #{$selector}:before {
+				background-image: svgicon($icon, $color-hover);
+			}
+		}
+	} @elseif $color-hover {
+		@warn 'An icon must be specified when setting an icon color.';
+	}
+
+	@if ($icon and $color-active) {
+		@if ($selector == '&') {
+			&:active:before {
+				background-image: svgicon($icon, $color-active);
+			}
+		} @else {
+			&:active #{$selector}:before {
+				background-image: svgicon($icon, $color-active);
+			}
+		}
+	} @elseif $color-active {
+		@warn 'An icon must be specified when setting an icon color.';
+	}
+}
+
+// Just @mixin icon with a bunch of sensible defaults set
+// Use this to place a new icon.
+@mixin icon(
+	$icon: tick,
+	$color: $icon-default-color,
+	$color-hover: false,
+	$color-active: false,
+	$size: $icon-default-size,
+	$position: $icon-default-position,
+	$_extend: true,
+	$selector: '&'
+) {
+	@include icon-state(
+		$icon: $icon,
+		$color: $color,
+		$color-hover: $color-hover,
+		$color-active: $color-active,
+		$size: $size,
+		$position: $position,
+		$_extend: $_extend,
+		$selector: $selector
+	) {
+		@content;
+	};
+}
+
+// Helper to hide an icon
+@mixin icon-hide {
+	&:before {
+		display: none;
+	}
+}
+
+// Test
+.icon-helpers-test {
+	@include icon(
+		$icon: tick,
+		$color: #333,
+		$color-hover: skyblue,
+		$color-active: darken(skyblue, 5%)
+	);
+}
