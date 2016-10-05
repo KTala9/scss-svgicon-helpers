@@ -1,7 +1,16 @@
 @import "icon-helpers.scss";
 
 // Test
-.icon-helpers-test {
+.icon-helpers-test-1 {
+	@include icon(
+		$icon: tick,
+		$color: #333,
+		$color-hover: skyblue,
+		$color-active: darken(skyblue, 5%)
+	);
+}
+
+.icon-helpers-test-2 {
 	@include icon(
 		$icon: tick,
 		$color: #333,

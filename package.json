@@ -20,7 +20,7 @@
     "grunt-contrib-clean": "~0.4.0",
     "grunt-contrib-watch": "^1.0.0",
     "postcss": "^5.2.4",
-    "postcss-svgicon": "0.0.5",
+    "postcss-svgicon": "^0.1.0",
     "postcss-svgo": "^2.1.5"
   }
 }
