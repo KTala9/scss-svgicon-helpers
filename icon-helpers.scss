@@ -134,13 +134,3 @@ $icon-default-position: center center !default;
 		display: none;
 	}
 }
-
-// Test
-.icon-helpers-test {
-	@include icon(
-		$icon: tick,
-		$color: #333,
-		$color-hover: skyblue,
-		$color-active: darken(skyblue, 5%)
-	);
-}

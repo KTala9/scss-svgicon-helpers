@@ -23,7 +23,7 @@ module.exports = function(grunt) {
 			},
 			dist: {
 				files: {
-					'./.temp/icon-helpers.css': './icon-helpers.scss'
+					'./.temp/style.css': './style.scss'
 				}
 			}
 		},
