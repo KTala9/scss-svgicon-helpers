@@ -13,10 +13,9 @@ $icon-default-color: #000 !default;
 $icon-default-size: 1em !default;
 $icon-default-position: center center !default;
 
-
 // base properties for all icons
 %icon-shared {
-	content: '';
+	content: "";
 	position: absolute;
 	top: 0;
 	left: 0;
@@ -30,34 +29,33 @@ $icon-default-position: center center !default;
 	transform: rotate(0);
 	transform-origin: $icon-default-position;
 
-	transition: background-color $icon-transition-speed,
-		transform $icon-transition-speed,
-		opacity $icon-transition-speed;
+	transition: background-color $icon-transition-speed, transform $icon-transition-speed, opacity $icon-transition-speed;
 }
 
 // An icon helper with no defaults set.
 // Use this to place modify an icon placed with @include icon()
 @mixin icon-state(
 	$icon: false,
-	$color: false,
-	$color-hover: false,
-	$color-active: false,
 	$size: false,
+	$color: false,
 	$position: false,
-	$_extend: false,
-	$selector: '&'
+	$selector: "&",
+	$_extend: false
 ) {
+
+	// Spit  $color into components
+	$color-base: if(length($color) >= 1, nth($color, 1), false);
+	$color-hover: if(length($color) >= 2, nth($color, 2), false);
+	$color-active: if(length($color) >= 3, nth($color, 3), false);
+
+	// Base styles
 	#{$selector}:before {
 		@if $_extend {
 			@extend %icon-shared;
 		}
 
-		@if ($icon and $color) {
-			background-image: svgicon($icon, $color);
-		} @elseif $color {
-			@warn 'An icon must be specified when setting an icon color.';
-		} @elseif $icon {
-			@warn 'A color must be specified when choosing an icon.';
+		@if ($icon and $color-base) {
+			background-image: svgicon($icon, $color-base);
 		}
 
 		@if $size {
@@ -71,8 +69,9 @@ $icon-default-position: center center !default;
 		@content;
 	}
 
+	// Hover styles
 	@if ($icon and $color-hover) {
-		@if ($selector == '&') {
+		@if ($selector == "&") {
 			&:hover:before,
 			&:focus:before {
 				background-image: svgicon($icon, $color-hover);
@@ -83,12 +82,11 @@ $icon-default-position: center center !default;
 				background-image: svgicon($icon, $color-hover);
 			}
 		}
-	} @elseif $color-hover {
-		@warn 'An icon must be specified when setting an icon color.';
 	}
 
+	// Active styles
 	@if ($icon and $color-active) {
-		@if ($selector == '&') {
+		@if ($selector == "&") {
 			&:active:before {
 				background-image: svgicon($icon, $color-active);
 			}
@@ -97,8 +95,6 @@ $icon-default-position: center center !default;
 				background-image: svgicon($icon, $color-active);
 			}
 		}
-	} @elseif $color-active {
-		@warn 'An icon must be specified when setting an icon color.';
 	}
 }
 
@@ -106,23 +102,19 @@ $icon-default-position: center center !default;
 // Use this to place a new icon.
 @mixin icon(
 	$icon: tick,
-	$color: $icon-default-color,
-	$color-hover: false,
-	$color-active: false,
 	$size: $icon-default-size,
+	$color: $icon-default-color false false,
 	$position: $icon-default-position,
-	$_extend: true,
-	$selector: '&'
+	$selector: "&",
+	$_extend: true
 ) {
 	@include icon-state(
 		$icon: $icon,
-		$color: $color,
-		$color-hover: $color-hover,
-		$color-active: $color-active,
 		$size: $size,
+		$color: $color,
 		$position: $position,
-		$_extend: $_extend,
-		$selector: $selector
+		$selector: $selector,
+		$_extend: $_extend
 	) {
 		@content;
 	};
